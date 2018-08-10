@@ -11,6 +11,7 @@ bineq = [];  beq = [];
 [Aineq, bineq] = addThrustConstraint(Aineq, bineq, modules);
 
 %% Implicit constraint: minimum power
+[Aineq, bineq] = addPowerConstraint(Aineq, bineq, modules);
 
 %% Implicit constraint: minimum frame-rate
 
