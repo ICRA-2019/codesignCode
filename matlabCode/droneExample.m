@@ -35,96 +35,26 @@ modules.nr_batteries = size(modules.batteries,2);
 Aineq = [];
 bineq = [];
 
-%% Implicit constraint 1: components should fit into frame
+%% Implicit constraint: components should fit into frame
 [Aineq, bineq] = addSizeConstraints(Aineq, bineq, modules);
 
-%% Implicit constraint 2: minimum thrust for flight
+%% Implicit constraint: minimum thrust for flight
 [Aineq, bineq] = addThrustConstraint(Aineq, bineq, modules);
 
-% %% Performance-resource for MCB (x)
-% M_px_x = rand(np_x,n_x);
-% M_rx_x = rand(nr_x,n_x);
-% 
-% %% Performance-resource for PSU (y)
-% M_py_y = rand(np_y,n_y);
-% M_ry_y = rand(nr_y,n_y);
-% 
-% %% Resources at the system level 
-% % r = [cost mass]
-% % rx = [cost mass voltage input] 
-% M_r_x = [1 0 0 0; 0 1 0 0] * M_rx_x;
-% % ry = [cost mass] 
-% M_r_y = [1 0; 0 1] * M_ry_y;
-% M_r_zxy = zeros(n_r,n_zxy);
-% 
-% %% Performance at the system level
-% % f(r_x, e) <= P p_y  -> no need to introduce z
-% % f(r_x, e) <= P p_y
-% % e >= beta(endurance)
-% % we rewrite it as follows, which allows eliminating the "e"
-% % beta(endurance) <= e <= P p_y / power_x
-% % f_2(x,y) = P p_y / power_x
-% % w <= f(x,y) = f * z => w <= f*z
-% f_2_mat = zeros(n_x, n_y);
-% for i=1:n_x
-%     for j=1:n_y
-%        f_2_mat(i,j) = M_py_y(3,j) / ( M_rx_x(3,i) * M_rx_x(4,i) );  
-%     end
-% end
-% % Z_xy in {0;1}^n_x,n_y
-% % 1' * (Z_xy .* f_2_mat) * 1 >= beta(endurance)
-% % Ax <= b
-% % vec(1' * (Z_xy .* f_2_mat) * 1) >= beta(endurance)
-% % using: vec(ABC) = (C' kron A) vec(B)  (wiki: vectorization)
-% % (1' kron 1) vec(Z_xy .* f_2_mat) = vec(f_2_mat)' * vec(Z_xy)
-% M_p_x = [1 0; 0 1; 0 0] * M_px_x;
-% M_p_y = zeros(n_p, n_y);
-% M_p_zxy = [zeros(2,n_zxy); vec(f_2_mat)'];
-% 
-% %% System performance specifications
-% beta_p = rand(3,1); % [voltage current endurance]
-% % This is the constraint we want to add
-% % M_p_x * x + M_p_y * y + M_p_zxy *z >= beta_p
-% 
-% %% For each interaction among blocks
-% n_exy = 2; % number of interactions between x and y
-% % E = edge, xy means connecting x and y, l means on the lesser side, x is the resources involved
-% % rx = [cost mass voltage input] 
-% E_xy_l_x = [zeros(2,2) eye(2)] * M_rx_x;  
-% % py = [voltage current capacity]
-% E_xy_g_y =[eye(2) zeros(2,1)] * M_py_y;
-% beta_xy = zeros(2,1);
-% % This is the constraint we want to add
-% % E_xy_l_x * x <= E_xy_g_y * y
-% 
-% %% Interactions among x, y, z_xy
-% % Z_xy(i,j) <= ( x(i) + y(j) )  / 2
-% % sum(Z_xy) = 1 
-% E_xyz_l_z = eye(n_zxy);
-% E_xyz_g_x = zeros(n_zxy,n_x);
-% E_xyz_g_y = zeros(n_zxy,n_y);
-% rowId = 0;
-% for i=1:n_x
-%     for j=1:n_y
-%         rowId = rowId+1;
-%         E_xyz_g_x(rowId,i) = 1/2;
-%         E_xyz_g_y(rowId,j) = 1/2;
-%     end
-% end
-% beta_xyz = zeros(n_zxy,1);
-% % This is the constraint we want to add
-% % E_xyz_l_z z <= E_xyz_g_x * x + E_xyz_g_y * y
-% 
-% %% Aineq x <= bineq
-% % this has the block structure of incidence matrix
-% %         x                    y              z_xy
-% Aineq = [-M_p_x               -M_p_y        -M_p_zxy;
-%          E_xy_l_x          -E_xy_g_y    zeros(n_exy, n_zxy)
-%         -E_xyz_g_x         -E_xyz_g_y      E_xyz_l_z];
-% bineq = [-beta_p; 
-%          beta_xy;
-%          beta_xyz];
-%      
+%% Implicit constraint: minimum power
+
+%% Implicit constraint: minimum frame-rate
+
+%% Implicit constraint: minimum keyframe-rate
+
+%% system constraint: maximum cost
+ 
+%% system constraint: minimum flight time
+
+%% design constraint: pick one for each module
+
+%% system objective: maximum speed
+
 % %% Costs
 % % map resources to cost
 % f_obj_r = rand(1,n_r);
