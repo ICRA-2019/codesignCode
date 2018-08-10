@@ -22,23 +22,24 @@ modules.frames = getFrameTable();
 modules.cameras = getCameraTable();
 modules.computerVIOs = getComputerVIOTable();
 modules.batteries = getBatteryTable();
-% [modules,maxNrFeatures] = padTablesWithZeros(modules); % for simplicity we assume a max feature size and pad smaller size with zeros
+[modules,maxNrFeatures] = padTablesWithZeros(modules); % for simplicity we assume a max feature size and pad smaller size with zeros
 
 %% Dimensionality of variables
-nr_motors = size(motors,2);
-nr_motor_features = size(motors,1);
-% TODO: do we really need these? 
+modules.nr_motors = size(modules.motors,2);
+modules.nr_frames = size(modules.frames,2);
+modules.nr_cameras = size(modules.cameras,2);
+modules.nr_computerVIOs = size(modules.computerVIOs,2);
+modules.nr_batteries = size(modules.batteries,2);
 
 %% Implicit constraints:
 Aineq = [];
 bineq = [];
 
-%% Implicit constraint 1: size should fit into frame (Aineq x <= bineq)
+%% Implicit constraint 1: components should fit into frame
 [Aineq, bineq] = addSizeConstraints(Aineq, bineq, modules);
-Asize1 = 1;
-bsize1 = 1;
-Aineq = [Aineq; Asize1];
-bineq = [bineq; bsize1];
+
+%% Implicit constraint 2: minimum thrust for flight
+[Aineq, bineq] = addThrustConstraint(Aineq, bineq, modules);
 
 % %% Performance-resource for MCB (x)
 % M_px_x = rand(np_x,n_x);
