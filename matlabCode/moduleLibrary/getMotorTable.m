@@ -2,8 +2,9 @@ function motors = getMotorTable()
 
 %% Emax MT2213 935Kv https://www.unmannedtechshop.co.uk/brushless-motor-emax-mt2213-935kv/
 % size = diameter
-motors_tranpose = ...
-% 1:size(m)  2:weight(g) 3:voltage(V)  4:current(A)  5:cost($)  6:thrust(g)     
+
+% 1:size(m)  2:weight(g) 3:voltage(V)  4:current(A)  5:cost($)  6:thrust(g) 
+motors_tranpose = ...     
 [0.025           55          11             1         12.82        110 % EMAX8045
  0.025           55          11             2         12.82        200
  0.025           55          11             3         12.82        270

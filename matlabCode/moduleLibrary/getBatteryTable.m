@@ -3,8 +3,9 @@ function batteries = getBatteryTable()
 % https://www.unmannedtechshop.co.uk/Lipo-Batteries/?_bc_fsnf=1&Voltage=11.1V
 % size = longest side
 % current = max continuous discharge
-batteries_tranpose = ...
-% 1:size(m)  2:weight(g) 3:voltage(V)  4:current(A)    5:cost(pound)  6:dischargeRate(C)   7:capacity(A/h)   
+
+% 1:size(m)  2:weight(g) 3:voltage(V)  4:current(A)    5:cost(pound)  6:dischargeRate(C)   7:capacity(A/h) 
+batteries_tranpose = ...  
 [0.071           120          11.1           58.5        12.93         90                1.3 % Tattu 1300mAh 11.1V 45C 3S1P LiPo Battery
  0.071           122          11.1           97.5        12.82        150                1.3 % Tattu 1300mAh 11.1V 75C 3S1P LiPo Battery Pack
  0.059            85          11.1           63.75       11.73         75                0.85 % Tattu 850mAh 11.1V 75C 3S1P Lipo Battery Pack
@@ -24,4 +25,4 @@ batteries_tranpose = ...
 cost_col = 5;
 batteries_tranpose(:,cost_col) = batteries_tranpose(:,cost_col) * 1.28; % convert to dollars
 
-batteries = motors_tranpose';
+batteries = batteries_tranpose';

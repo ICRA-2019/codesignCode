@@ -20,8 +20,8 @@ addpath('./moduleLibrary')
 motors = getMotorTable();
 % frames = getFrameTable();
 % cameras = getCameraTable();
-% computerVIOs = getComputerVIOTable();
-% batteries = getBatteryTable();
+computerVIOs = getComputerVIOTable();
+batteries = getBatteryTable();
 
 
 stop
