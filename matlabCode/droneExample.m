@@ -31,9 +31,9 @@ modules.nr_cameras = size(modules.cameras,2);
 modules.nr_computerVIOs = size(modules.computerVIOs,2);
 modules.nr_batteries = size(modules.batteries,2);
 
-%% Implicit constraints:
-Aineq = [];
-bineq = [];
+%% constraints:
+Aineq = [];  Aeq = [];
+bineq = [];  beq = [];
 
 %% Implicit constraint: components should fit into frame
 [Aineq, bineq] = addSizeConstraints(Aineq, bineq, modules);
@@ -52,6 +52,7 @@ bineq = [];
 %% system constraint: minimum flight time
 
 %% design constraint: pick one for each module
+[Aeq, beq] = addUniqueModuleConstraints(Aeq, beq, modules);
 
 %% system objective: maximum speed
 
