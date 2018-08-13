@@ -1,6 +1,6 @@
 function computerVIOs = getComputerVIOTable()
 
-% 1:size(m)  2:weight with cooler(g) 3:voltage(V)  4:current(A)  5:cost($) 6:Front-end Throughput(s) 7:back-end Throughput(Hz)
+% 1:size(m)  2:weight with cooler(g) 3:voltage(V)  4:current(A)  5:cost($) 6:Front-end Throughput(Hz) 7:back-end Throughput(Hz)
 % TX2 voltage: +9V - +14V DC Nominal 
 
 % laptop current: zero since it is self powered by its own battery

@@ -15,8 +15,10 @@ bineq = [];  beq = [];
 
 %% Implicit constraint: minimum frame-rate
 [Aineq, bineq] = addFramerateConstraint(Aineq, bineq, modules, specs.maxPxDisplacementFrames);
+[Aineq, bineq] = addFramerateVIOConstraint(Aineq, bineq, modules);
 
 %% Implicit constraint: minimum keyframe-rate
+[Aineq, bineq] = addKeyframerateConstraint(Aineq, bineq, modules, specs.maxPxDisplacementKeyframes)
 
 %% system constraint: maximum cost
 [Aineq, bineq] = addCostConstraint(Aineq, bineq, modules, specs.maxBudget);
