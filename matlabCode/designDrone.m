@@ -18,20 +18,19 @@ bineq = [];  beq = [];
 [Aineq, bineq] = addFramerateVIOConstraint(Aineq, bineq, modules);
 
 %% Implicit constraint: minimum keyframe-rate
-[Aineq, bineq] = addKeyframerateConstraint(Aineq, bineq, modules, specs.maxPxDisplacementKeyframes)
+[Aineq, bineq] = addKeyframerateConstraint(Aineq, bineq, modules, specs.maxPxDisplacementKeyframes);
 
 %% system constraint: maximum cost
 [Aineq, bineq] = addCostConstraint(Aineq, bineq, modules, specs.maxBudget);
 
 %% system constraint: minimum flight time
-
+%% TODO
 
 %% design constraint: pick one for each module
 [Aeq, beq] = addUniqueModuleConstraints(Aeq, beq, modules);
 
 %% system objective: maximum speed
-
-%% add endurance constraint
+%% TODO
 
 x = [];
 
