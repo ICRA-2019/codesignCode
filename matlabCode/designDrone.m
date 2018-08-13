@@ -8,12 +8,13 @@ bineq = [];  beq = [];
 [Aineq, bineq] = addSizeConstraints(Aineq, bineq, modules);
 
 %% Implicit constraint: minimum thrust for flight
-[Aineq, bineq] = addThrustConstraint(Aineq, bineq, modules);
+[Aineq, bineq] = addThrustConstraint(Aineq, bineq, modules, specs.minThrustRatio);
 
 %% Implicit constraint: minimum power
 [Aineq, bineq] = addPowerConstraint(Aineq, bineq, modules);
 
 %% Implicit constraint: minimum frame-rate
+[Aineq, bineq] = addFramerateConstraint(Aineq, bineq, modules, specs.maxPxDisplacementFrames);
 
 %% Implicit constraint: minimum keyframe-rate
 
@@ -22,10 +23,13 @@ bineq = [];  beq = [];
 
 %% system constraint: minimum flight time
 
+
 %% design constraint: pick one for each module
 [Aeq, beq] = addUniqueModuleConstraints(Aeq, beq, modules);
 
 %% system objective: maximum speed
+
+%% add endurance constraint
 
 x = [];
 

@@ -33,7 +33,10 @@ modules.nr_batteries = size(modules.batteries,2);
 
 %% system constraints
 specs.maxBudget = 3000; % [$]
+specs.minThrustRatio = 2; % []
 specs.minFlightTime = 60 * 15; % [s] = 15 min
+specs.maxPxDisplacementFrames = 20; % [px]
+specs.maxPxDisplacementKeyframes = 100; % [px]
 
 %% design!
 x = designDrone(modules, specs);
