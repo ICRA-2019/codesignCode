@@ -24,37 +24,34 @@ bineq = [];  beq = [];
 [Aineq, bineq] = addCostConstraint(Aineq, bineq, modules, specs.maxBudget);
 
 %% system constraint: minimum flight time
-%% TODO
+[Aineq, bineq] = addEnduranceConstraint(Aineq, bineq, modules, specs.minFlightTime);
 
 %% design constraint: pick one for each module
 [Aeq, beq] = addUniqueModuleConstraints(Aeq, beq, modules);
 
 %% system objective: maximum speed
-%% TODO
+f = maxSpeedObjective(modules);
 
-x = [];
+%% solve optimization problem:     
+% lower and upper bound on x
+lb = [];
+ub = [];
 
-% %% Costs
-% % map resources to cost
-% f_obj_r = rand(1,n_r);
-% %                x       y      z_xy
-% f = f_obj_r * [M_r_x   M_r_y  M_r_zxy]; % min f' xy
-% 
-% %% Aeq x = beq (used to enforce sum(x) = 1, i.e., we choose a single motor)
-% Aeq = [ones(1,n_x)  zeros(1,n_y)    zeros(1,n_zxy); 
-%        zeros(1,n_x)  ones(1,n_y)    zeros(1,n_zxy);
-%        zeros(1,n_x)  zeros(1,n_y)   ones(1,n_zxy)]; 
-% beq = [1;1;1];
-%      
-% % lower and upper bound on x
-% lb = [];
-% ub = [];
-% 
-% % set options and optimize
-% options = cplexoptimset;
-%    options.Display = 'on';
-% [xyz, fval, exitflag, output] = cplexbilp (f, Aineq, bineq, Aeq, beq, [], options);
-% 
-% xyz
-% 
-% fval
+% set options and optimize
+options = cplexoptimset;
+options.Display = 'on';
+[x, fval, exitflag, output] = cplexbilp (f, Aineq, bineq, Aeq, beq, [], options);
+
+if isempty(x)==0
+    fprintf('optimal objective: %g\n',fval);
+    disp('optimal solution')
+    disp(x')
+    xdesign = parsex(x, modules);
+    fprintf('- use motor: %d\n',xdesign(1));
+    fprintf('- use frame: %d\n',xdesign(2));
+    fprintf('- use camera: %d\n',xdesign(3));
+    fprintf('- use computer: %d\n',xdesign(4));
+    fprintf('- use battery: %d\n',xdesign(5));
+else
+    disp('design problem not feasible')
+end
