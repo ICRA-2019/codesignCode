@@ -38,8 +38,10 @@ modules.nr_batteries = size(modules.batteries,2);
 
 %% system constraints
 specs.maxBudget = 10000; % [$]
-specs.minThrustRatio = 1.5; % []
+specs.minThrustRatio = 2; % []
 specs.minFlightTime = 60 * 10; % [s] = X min
+% batteryCapacity = 10/60 * AverageAmpDraw / 0.8 = 10/60 * (4*5) / 0.8
+
 specs.maxPxDisplacementFrames = 30; % [px]
 specs.maxPxDisplacementKeyframes = 100; % [px]
 
