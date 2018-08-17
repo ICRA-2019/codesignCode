@@ -1,4 +1,4 @@
-function maxFlightTime = estimateFlightTime(modules,x)
+function [maxFlightTime_seconds,maxFlightTime_minutes]  = estimateFlightTime(modules,x)
 
 % (Battery Capacity * 0.8 / Average Amp Draw) * 60^2 > minFlightTime [s]
 xdesign = parsex(x, modules);
@@ -24,4 +24,5 @@ volt_vio = modules.cameras(fIds.voltage,x_vio);
 
 averageAmpDraw = ( (4 * curr_m * volt_m) + (curr_c*volt_c) + (curr_vio*volt_vio) ) / volt_b; % [4 motors]
 
-maxFlightTime = (batteryCapacity * 0.8 / averageAmpDraw) * 60^2; 
+maxFlightTime_seconds = (batteryCapacity * 0.8 / averageAmpDraw) * 60^2;
+maxFlightTime_minutes = maxFlightTime_seconds/60;
