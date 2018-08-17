@@ -244,10 +244,31 @@ classdef testDesignDrone < matlab.unittest.TestCase
             testCase.verifyEqual(expSol,actSol,'AbsTol',1e-7)
             testCase.verifyEqual(maxBudget,bineq,'AbsTol',1e-7)
         end 
-
-        % %% system constraint: minimum flight time
-        % [Aineq, bineq] = addEnduranceConstraint(Aineq, bineq, modules, specs.minFlightTime);
-       
+        
+                %% test_addEnduranceConstraint
+        function test_addEnduranceConstraint(testCase)
+            addpath('../moduleLibrary/');
+            [modules] = loadModules();
+            minFlightTime = 10*60; % 10min
+            [Aineq, bineq] = addEnduranceConstraint([], [], modules, minFlightTime);
+            
+            x = [1; zeros(modules.nr_motors-1,1);
+                1; zeros(modules.nr_frames-1,1);
+                1; zeros(modules.nr_cameras-1,1);
+                1; zeros(modules.nr_computerVIOs-1,1);
+                1; zeros(modules.nr_batteries-1,1)]; 
+            
+            % -log(Battery Capacity)  + log(power motor)  < -log(minFlightTime) + log(0.8) + log(3600) 
+            actSol = Aineq*x;
+            expSol = -log(1.3)  + log(4*1); % [note: 4 motors] 
+            testCase.verifyEqual(expSol,actSol,'AbsTol',1e-7)
+            
+            bExp = -log(minFlightTime) + log(0.8) + log(3600);
+            testCase.verifyEqual(bExp,bineq,'AbsTol',1e-7)
+            
+            maxFlightTime = estimateFlightTime(modules,x); % better estimate of flight time that accounts for all currents drawn
+            testCase.verifyEqual(15.1167 * 60,maxFlightTime,'AbsTol',1)
+        end 
         
         %% test_addUniqueModuleConstraints
         function test_addUniqueModuleConstraints(testCase)
