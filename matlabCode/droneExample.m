@@ -40,3 +40,5 @@ specs.maxPxDisplacementKeyframes = 100; % [px]
 
 %% design!
 x = designDrone(modules, specs);
+
+warning('need faster framerate cameras for the design to be feasible')
