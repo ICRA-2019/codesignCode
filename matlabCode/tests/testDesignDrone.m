@@ -245,7 +245,7 @@ classdef testDesignDrone < matlab.unittest.TestCase
             testCase.verifyEqual(maxBudget,bineq,'AbsTol',1e-7)
         end 
         
-                %% test_addEnduranceConstraint
+        %% test_addEnduranceConstraint
         function test_addEnduranceConstraint(testCase)
             addpath('../moduleLibrary/');
             [modules] = loadModules();
