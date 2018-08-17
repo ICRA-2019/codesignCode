@@ -3,6 +3,23 @@ classdef testDesignDrone < matlab.unittest.TestCase
     % you can run this by writing run(testDesignDrone) int he terminal
     
     methods(Test)
+        %% test_xparse 
+        function test_xparse(testCase)
+            addpath('../moduleLibrary/');
+            [modules] = loadModules();
+                        
+            x = [1; zeros(modules.nr_motors-1,1);
+                1; zeros(modules.nr_frames-1,1);
+                1; zeros(modules.nr_cameras-1,1);
+                1; zeros(modules.nr_computerVIOs-1,1);
+                1; zeros(modules.nr_batteries-1,1)]; 
+            
+            actSol = parsex(x, modules);
+            expSol = ones(5,1); % we select the first design choice for each module
+            
+            testCase.verifyEqual(expSol,actSol)
+        end
+        
         %% test_addSizeConstraints 
         function test_addSizeConstraints(testCase)
             addpath('../moduleLibrary/');
@@ -121,7 +138,13 @@ classdef testDesignDrone < matlab.unittest.TestCase
             testCase.verifyEqual(expSol,actSol,'AbsTol',1e-7)
             testCase.verifyEqual(expb,bineq)
             
-            % test more realistic values:
+            % TEST ESTIMATE SPEED FUNCTION
+            effectiveMaxVel = estimateMaxForwardSpeed(modules,x); % = 5.218855216659
+            upperBoundUsedInDesign = maxv; %  = 15.5328539200284
+            gap = 10.313998; % our upper bound is not great (we underestimate weight a lot)
+            testCase.verifyEqual(upperBoundUsedInDesign - gap,effectiveMaxVel,'AbsTol',1e-4)
+            
+            % TEST MORE REALISTIC VALUES
             T = 110; %[g]
             A = 0.29^2; %[m^2]
             m_b = 120; %[g]
@@ -258,8 +281,24 @@ classdef testDesignDrone < matlab.unittest.TestCase
             testCase.verifyEqual(expSol,actSol,'AbsTol',1e-7)
         end
 
-        % %% system objective: maximum speed
-        % f = maxSpeedObjective(modules);
+        %% test_maxSpeedObjective
+        function test_maxSpeedObjective(testCase)
+            addpath('../moduleLibrary/');
+            [modules] = loadModules();
+            f = maxSpeedObjective(modules);
+            
+            x = [1; zeros(modules.nr_motors-1,1);
+                1; zeros(modules.nr_frames-1,1);
+                1; zeros(modules.nr_cameras-1,1);
+                1; zeros(modules.nr_computerVIOs-1,1);
+                1; zeros(modules.nr_batteries-1,1)];
+            
+            % 2log(A) - 2log(T)
+            actSol = f*x;
+            expSol = 2*log(0.29^2) - 2*log(4*110);%[note: 4 motors]
+            
+            testCase.verifyEqual(expSol,actSol,'AbsTol',1e-7)
+        end
         
     end %method
 end %classdef

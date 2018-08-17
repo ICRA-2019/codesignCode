@@ -5,6 +5,10 @@ clear all
 close all
 clc
 
+%% start by running unit tests
+clc; run(testDesignDrone);
+
+%% run actual example
 addpath('./moduleLibrary')
 
 %% Modules to design, each one described by a matrix: features vs module choice
