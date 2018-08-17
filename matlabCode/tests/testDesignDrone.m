@@ -139,9 +139,27 @@ classdef testDesignDrone < matlab.unittest.TestCase
             testCase.verifyEqual(expSol,actSol,'AbsTol',1e-7)
             minw = exp( (+4*log(4*T*g*1e-3)-2*log(A)-2*log(m_b*g*1e-3)-log(c)+4*log(k) ) / 4 ); %% more realistic = 55fps
         end 
-        % %% Implicit constraint: minimum frame-rate
-        % [Aineq, bineq] = addFramerateVIOConstraint(Aineq, bineq, modules);
-        %
+        
+        %% test_addFramerateVIOConstraint
+        function test_addFramerateVIOConstraint(testCase)
+            addpath('../moduleLibrary/');
+            [modules] = loadModules();
+            [Aineq, bineq] = addFramerateVIOConstraint([], [], modules);
+            
+            x = [1; zeros(modules.nr_motors-1,1);
+                1; zeros(modules.nr_frames-1,1);
+                1; zeros(modules.nr_cameras-1,1);
+                1; zeros(modules.nr_computerVIOs-1,1);
+                1; zeros(modules.nr_batteries-1,1)]; 
+            
+            % fvio_frontend > fcamera => fcamera - fvio_frontend <= 0
+            actSol = Aineq*x;
+            expSol = 30 - 3.91; 
+            
+            testCase.verifyEqual(expSol,actSol)
+            testCase.verifyEqual(0,bineq)
+        end 
+
         % %% Implicit constraint: minimum keyframe-rate
         % [Aineq, bineq] = addKeyframerateConstraint(Aineq, bineq, modules, specs.maxPxDisplacementKeyframes);
         %

@@ -42,3 +42,4 @@ specs.maxPxDisplacementKeyframes = 100; % [px]
 x = designDrone(modules, specs);
 
 warning('need faster framerate cameras for the design to be feasible')
+warning('VIO frontend should be faster than camera to be feasible')

@@ -1,4 +1,4 @@
-function [Aineq, bineq] = addKeyframerateVIOConstraint(Aineq, bineq, modules)
+function [Aineq, bineq] = addFramerateVIOConstraint(Aineq, bineq, modules)
 %% (Aineq x <= bineq)
  
 %% vectorization requires deciding an ordering for the modules and the features
@@ -7,7 +7,7 @@ function [Aineq, bineq] = addKeyframerateVIOConstraint(Aineq, bineq, modules)
 fIds.framerate = 6;
 fIds.frontendRate = 6;
 
-% fcamera < fvio => fcamera - fvio <= 0
+% fvio_frontend > fcamera => fcamera - fvio_frontend <= 0
 Af_mat = zeros(nrFeat,nrModules);
 Af_mat(fIds.framerate,mIds.camera) = +1;
 Af_mat(fIds.frontendRate,mIds.computer) = -1;
