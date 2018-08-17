@@ -7,10 +7,10 @@ function cameras = getCameraTable()
 % power: https://www.sony-semicon.co.jp/products_en/new_pro/april_2014/imx219_e.html
 % 1:size(m)  2:weight      3:voltage(V)  4:current(A)  5:cost($)       6:framerate
 cameras_tranpose = ...     
-[0.03              50         3             0.3           30               30 
+[0.03              50         3             0.3            30               30 
 0.03               50         3             0.3            60               60 
-0.03               50         3             0.3           100               100 
-0.03               50         3             0.3           200               200 
+0.03               50         3             0.3           100               80 
+0.03               50         3             0.3           200               100 
  ]; 
 
 cameras = cameras_tranpose';
