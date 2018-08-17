@@ -62,11 +62,67 @@ classdef testDesignDrone < matlab.unittest.TestCase
             testCase.verifyEqual(actSol,expSol,'AbsTol',1e-7)
         end
         
-        % %% Implicit constraint: minimum power
-        % [Aineq, bineq] = addPowerConstraint(Aineq, bineq, modules);
-        %
+        %% test_addPowerConstraint
+        function test_addPowerConstraint(testCase)
+            addpath('../moduleLibrary/');
+            [modules] = loadModules();
+            [Aineq, bineq] = addPowerConstraint([], [], modules);
+            
+            x = [1; zeros(modules.nr_motors-1,1);
+                1; zeros(modules.nr_frames-1,1);
+                1; zeros(modules.nr_cameras-1,1);
+                1; zeros(modules.nr_computerVIOs-1,1);
+                1; zeros(modules.nr_batteries-1,1)]; 
+            
+            % sum powers components - power battery < 0
+            actSol = Aineq*x;
+            expSol = (4*11*1+3*0.3+5*4)-11.1*58.5; % = -584.45 (note: 4 motors)
+            
+            testCase.verifyEqual(expSol,actSol)
+            testCase.verifyEqual(0,bineq)
+        end       
+
+        %% test_addFramerateConstraint
+        function test_addFramerateConstraint(testCase)
+            addpath('../moduleLibrary/');
+            [modules] = loadModules();
+            maxPxDisplacementFrames = 20;
+            [Aineq, bineq] = addFramerateConstraint([], [], modules, maxPxDisplacementFrames);
+            
+            x = [1; zeros(modules.nr_motors-1,1);
+                1; zeros(modules.nr_frames-1,1);
+                1; zeros(modules.nr_cameras-1,1);
+                1; zeros(modules.nr_computerVIOs-1,1);
+                1; zeros(modules.nr_batteries-1,1)];
+            
+            % sum powers components - power battery < 0
+            actSol = Aineq*x;
+            
+            g = 9.81; %[m/s^2]
+            minDistance = 1; % min distance to obstacles
+            f = 320; % focal length (px/m) % assume fixed for all cameras
+            k = f / (maxPxDisplacementFrames * minDistance);
+            rho = 1.2; % Air density [kg/m3],
+            cd =  1.3; % the drag coefficient
+            c = (0.5 * rho * cd)^2;
+            
+            % +4log(4T*g* 1e-3)-2log(A)-2log(m_b*g* 1e-3) - log(w) \leq log(c) - log(k) %% all masses in Kg
+            T = 110; %[g]
+            A = 0.055^2; %[m^2]
+            m_b = 120; %[g]
+            w = 30; % fps
+            expSol = +4*log(4*T*g*1e-3)-2*log(A)-2*log(m_b*g*1e-3)-log(w) % = 13.7239
+            actSol
+            expb = log(c) - log(k);
+            
+            % +4*log(4*T*g*1e-3)-2*log(A)-2*log(m_b*g*1e-3)-log(w) < log(c) - log(k)
+            %=> log(w) > +4*log(4*T*g*1e-3)-2*log(A)-2*log(m_b*g*1e-3) -log(c) + log(k)
+            minw = exp(+4*log(4*T*g*1e-3)-2*log(A)-2*log(m_b*g*1e-3) -log(c) + log(k))
+            
+            testCase.verifyEqual(expSol,actSol,'AbsTol',1e-7)
+            testCase.verifyEqual(expb,bineq)
+        end 
         % %% Implicit constraint: minimum frame-rate
-        % [Aineq, bineq] = addFramerateConstraint(Aineq, bineq, modules, specs.maxPxDisplacementFrames);
         % [Aineq, bineq] = addFramerateVIOConstraint(Aineq, bineq, modules);
         %
         % %% Implicit constraint: minimum keyframe-rate
