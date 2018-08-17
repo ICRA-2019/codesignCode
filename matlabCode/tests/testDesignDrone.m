@@ -224,10 +224,40 @@ classdef testDesignDrone < matlab.unittest.TestCase
 
         % %% system constraint: minimum flight time
         % [Aineq, bineq] = addEnduranceConstraint(Aineq, bineq, modules, specs.minFlightTime);
-        %
-        % %% design constraint: pick one for each module
-        % [Aeq, beq] = addUniqueModuleConstraints(Aeq, beq, modules);
-        %
+       
+        
+        %% test_addUniqueModuleConstraints
+        function test_addUniqueModuleConstraints(testCase)
+            addpath('../moduleLibrary/');
+            [modules] = loadModules();
+            [Aeq, beq] = addUniqueModuleConstraints([], [], modules);
+            
+            x = [1; zeros(modules.nr_motors-1,1);
+                1; zeros(modules.nr_frames-1,1);
+                1; zeros(modules.nr_cameras-1,1);
+                1; zeros(modules.nr_computerVIOs-1,1);
+                1; zeros(modules.nr_batteries-1,1)];
+            
+            % sum costs < maxBudget
+            actSol = Aeq*x - beq;
+            expSol = zeros(5,1); % constraint for each module
+            
+            testCase.verifyEqual(expSol,actSol,'AbsTol',1e-7)
+            
+            % SECOND TEST
+            x = [1; zeros(modules.nr_motors-2,1); 1; % not a feasible solution
+                1; zeros(modules.nr_frames-1,1);
+                1; zeros(modules.nr_cameras-1,1);
+                1; zeros(modules.nr_computerVIOs-1,1);
+                1; zeros(modules.nr_batteries-1,1)];
+            
+            % sum costs < maxBudget
+            actSol = Aeq*x - beq;
+            expSol = [1; zeros(4,1)];
+            
+            testCase.verifyEqual(expSol,actSol,'AbsTol',1e-7)
+        end
+
         % %% system objective: maximum speed
         % f = maxSpeedObjective(modules);
         
