@@ -6,8 +6,8 @@ close all
 clc
 
 %% start by running unit tests
-addpath('./tests')
-clc; run(testDesignDrone);
+% addpath('./tests')
+% clc; run(testDesignDrone);
 
 %% run actual example
 addpath('./moduleLibrary')
@@ -37,13 +37,12 @@ modules.nr_computerVIOs = size(modules.computerVIOs,2);
 modules.nr_batteries = size(modules.batteries,2);
 
 %% system constraints
-specs.maxBudget = 3000; % [$]
-specs.minThrustRatio = 2; % []
-specs.minFlightTime = 60 * 15; % [s] = 15 min
+specs.maxBudget = 10000; % [$]
+specs.minThrustRatio = 1.5; % []
+specs.minFlightTime = 60 * 10; % [s] = X min
 specs.maxPxDisplacementFrames = 30; % [px]
 specs.maxPxDisplacementKeyframes = 100; % [px]
 
 %% design!
 x = designDrone(modules, specs);
 
-warning('VIO frontend should be faster than camera to be feasible')

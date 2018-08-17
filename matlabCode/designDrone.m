@@ -15,10 +15,12 @@ bineq = [];  beq = [];
 
 %% Implicit constraint: minimum frame-rate
 [Aineq, bineq] = addFramerateConstraint(Aineq, bineq, modules, specs.maxPxDisplacementFrames);
-[Aineq, bineq] = addFramerateVIOConstraint(Aineq, bineq, modules);
+warning('uncomment: addFramerateVIOConstraint')
+% [Aineq, bineq] = addFramerateVIOConstraint(Aineq, bineq, modules);
 
-%% Implicit constraint: minimum keyframe-rate
-[Aineq, bineq] = addKeyframerateConstraint(Aineq, bineq, modules, specs.maxPxDisplacementKeyframes);
+warning('uncomment: addKeyframerateConstraint')
+% %% Implicit constraint: minimum keyframe-rate
+% [Aineq, bineq] = addKeyframerateConstraint(Aineq, bineq, modules, specs.maxPxDisplacementKeyframes);
 
 %% system constraint: maximum cost
 [Aineq, bineq] = addCostConstraint(Aineq, bineq, modules, specs.maxBudget);
@@ -33,10 +35,6 @@ bineq = [];  beq = [];
 f = maxSpeedObjective(modules);
 
 %% solve optimization problem:     
-% lower and upper bound on x
-lb = [];
-ub = [];
-
 % set options and optimize
 options = cplexoptimset;
 options.Display = 'on';
@@ -44,14 +42,18 @@ options.Display = 'on';
 
 if isempty(x)==0
     fprintf('optimal objective: %g\n',fval);
-    disp('optimal solution')
-    disp(x')
+    % disp('optimal solution'); disp(x')
     xdesign = parsex(x, modules);
     fprintf('- use motor: %d\n',xdesign(1));
     fprintf('- use frame: %d\n',xdesign(2));
     fprintf('- use camera: %d\n',xdesign(3));
     fprintf('- use computer: %d\n',xdesign(4));
     fprintf('- use battery: %d\n',xdesign(5));
+    
+    maxVel = estimateMaxForwardSpeed(modules,x);
+    fprintf('* max velocity [m/s]: %g\n',maxVel);
+    [~,maxFlightTime_minutes] = estimateFlightTime(modules,x);
+    fprintf('* max flight time [minutes]: %g\n',maxFlightTime_minutes);
 else
     disp('design problem not feasible')
 end

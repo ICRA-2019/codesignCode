@@ -9,8 +9,8 @@ function cameras = getCameraTable()
 cameras_tranpose = ...     
 [0.03              50         3             0.3            30               30 
 0.03               50         3             0.3            60               60 
-0.03               50         3             0.3           100               80 
-0.03               50         3             0.3           200               100 
+0.03               50         3             0.3           100               100 
+0.03               50         3             0.3           200               200 
  ]; 
 
 cameras = cameras_tranpose';
