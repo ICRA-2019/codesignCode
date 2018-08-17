@@ -10,7 +10,7 @@ fIds.thrust = 6;
 % minThrustRatio * sum weight components - Motor_trust X nrMotors < 0
 Athrust_mat = zeros(nrFeat,nrModules);
 Athrust_mat(fIds.thrust,mIds.motor) = -4; % 4 times since we have 4 motors
-Athrust_mat(fIds.weight,mIds.motor) = +minThrustRatio;
+Athrust_mat(fIds.weight,mIds.motor) = +4*minThrustRatio; % weight of 4 motors
 Athrust_mat(fIds.weight,mIds.frame) = +minThrustRatio;
 Athrust_mat(fIds.weight,mIds.camera) = +minThrustRatio;
 Athrust_mat(fIds.weight,mIds.computer) = +minThrustRatio;
