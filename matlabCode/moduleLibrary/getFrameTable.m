@@ -4,7 +4,7 @@ function frames = getFrameTable()
 
 % voltage and current are kept to preserve ordering wrt other modules
 % size is only longest = length
-% 1:size(m)  2:weight(g) 3:voltage(V)  4:current(A)    5:cost(pound) 6:width(m) 7:height(m)
+% 1:size(m)  2:weight(g) 3:voltage(V)  4:current(A)    5:cost(pound) 6:width??(m) 7:height(m)
 frames_tranpose = ...     
 [ 0.290            750         0             0           22.87          0.055      0.075 % S500 Glass Fiber Quadcopter Frame 480mm - Integrated PCB Version
   0.325           1214         0             0           63.99          0.120      0.205 % Dead Cat Pro Quadcopter with Mobius Gimbal (Kit)

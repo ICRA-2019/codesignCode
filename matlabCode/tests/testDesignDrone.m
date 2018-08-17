@@ -99,28 +99,45 @@ classdef testDesignDrone < matlab.unittest.TestCase
             actSol = Aineq*x;
             
             g = 9.81; %[m/s^2]
-            minDistance = 1; % min distance to obstacles
+            minDistance = 3; % min distance to obstacles
             f = 320; % focal length (px/m) % assume fixed for all cameras
             k = f / (maxPxDisplacementFrames * minDistance);
             rho = 1.2; % Air density [kg/m3],
             cd =  1.3; % the drag coefficient
             c = (0.5 * rho * cd)^2;
             
-            % +4log(4T*g* 1e-3)-2log(A)-2log(m_b*g* 1e-3) - log(w) \leq log(c) - log(k) %% all masses in Kg
+            % +4log(4T*g* 1e-3)-2log(A)-2log(m_b*g* 1e-3) - 4log(w) \leq log(c) - 4log(k) %% all masses in Kg
             T = 110; %[g]
-            A = 0.055^2; %[m^2]
+            A = 0.29^2; %[m^2]
             m_b = 120; %[g]
             w = 30; % fps
-            expSol = +4*log(4*T*g*1e-3)-2*log(A)-2*log(m_b*g*1e-3)-log(w) % = 13.7239
-            actSol
-            expb = log(c) - log(k);
+            expSol = +4*log(4*T*g*1e-3)-2*log(A)-2*log(m_b*g*1e-3)-4*log(w); % = 3.5203
+            expb = log(c) - 4*log(k);
             
-            % +4*log(4*T*g*1e-3)-2*log(A)-2*log(m_b*g*1e-3)-log(w) < log(c) - log(k)
-            %=> log(w) > +4*log(4*T*g*1e-3)-2*log(A)-2*log(m_b*g*1e-3) -log(c) + log(k)
-            minw = exp(+4*log(4*T*g*1e-3)-2*log(A)-2*log(m_b*g*1e-3) -log(c) + log(k))
-            
+            % +4log(4T*g* 1e-3)-2log(A)-2log(m_b*g*1e-3) - 4log(w) \leq log(c) - 4log(k)
+            %=> 4log(w) > +4*log(4*T*g*1e-3)-2*log(A)-2*log(m_b*g*1e-3) -log(c) + 4log(k)
+            maxv = exp( (+4*log(4*T*g*1e-3)-2*log(A)-2*log(m_b*g*1e-3)-log(c)) / 4); % 15.5329m/s
+            minw = exp( (+4*log(4*T*g*1e-3)-2*log(A)-2*log(m_b*g*1e-3)-log(c)+4*log(k) ) / 4 ); % 248.5257 fps!!!
             testCase.verifyEqual(expSol,actSol,'AbsTol',1e-7)
             testCase.verifyEqual(expb,bineq)
+            
+            % test more realistic values:
+            T = 110; %[g]
+            A = 0.29^2; %[m^2]
+            m_b = 120; %[g]
+            rho = 1.2; % Air density [kg/m3],
+            cd =  1.3; % the drag coefficient
+            c = (0.5 * rho * cd)^2;
+            
+            minDistance = 3;
+            maxPxDisplacementFrames = 30;
+            f = 320; % focal length (px/m) % assume fixed for all cameras
+            k = f / (maxPxDisplacementFrames * minDistance);
+            
+            maxv1 = ( (1/(c*A^2)) * (4*T*g*1e-3)^2 * ((4*T*g*1e-3)^2/(m_b*g*1e-3)^2 - 1))^(1/4); % 15.5329m/s   
+            maxv2 = exp( (+4*log(4*T*g*1e-3)-2*log(A)-2*log(m_b*g*1e-3)-log(c)) / 4); % other way to compute
+            testCase.verifyEqual(expSol,actSol,'AbsTol',1e-7)
+            minw = exp( (+4*log(4*T*g*1e-3)-2*log(A)-2*log(m_b*g*1e-3)-log(c)+4*log(k) ) / 4 ); %% more realistic = 55fps
         end 
         % %% Implicit constraint: minimum frame-rate
         % [Aineq, bineq] = addFramerateVIOConstraint(Aineq, bineq, modules);

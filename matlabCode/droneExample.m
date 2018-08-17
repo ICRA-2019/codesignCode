@@ -35,7 +35,7 @@ modules.nr_batteries = size(modules.batteries,2);
 specs.maxBudget = 3000; % [$]
 specs.minThrustRatio = 2; % []
 specs.minFlightTime = 60 * 15; % [s] = 15 min
-specs.maxPxDisplacementFrames = 20; % [px]
+specs.maxPxDisplacementFrames = 30; % [px]
 specs.maxPxDisplacementKeyframes = 100; % [px]
 
 %% design!

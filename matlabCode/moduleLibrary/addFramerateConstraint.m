@@ -11,7 +11,7 @@ fIds.thrust = 6;
 %% define constants:
 % parameters from: https://klsin.bpmsg.com/how-fast-can-a-quadcopter-fly/
 g = 9.81; %[m/s^2]
-minDistance = 1; % min distance to obstacles
+minDistance = 3; % min distance to obstacles
 f = 320; % focal length (px/m) % assume fixed for all cameras
 k = f / (maxPxDisplacementFrames * minDistance);
 rho = 1.2; % Air density [kg/m3], 
@@ -19,18 +19,20 @@ cd =  1.3; % the drag coefficient
 c = (0.5 * rho * cd)^2;
 
 %% define constraints:
-% log(w) \geq log(k)+4log(4T)-log(c)-2log(A)-2log(m_b*g)
-% log(k)+4log(4T)-log(c)-2log(A)-2log(m_b*g) - log(w) \leq 0
-% +4log(4T)-2log(A)-2log(m_b*g) - log(w) \leq log(c) - log(k)
-bthrust = log(c) - log(k);
+% w > k * v
+% w^4 > k^4 * T^4 / (c * A^2 * (mg)^2)
+% 4log(w) \geq 4log(k)+4log(4T)-log(c)-2log(A)-2log(m_b*g)
+% 4log(k)+4log(4T)-log(c)-2log(A)-2log(m_b*g) - 4log(w) \leq 0
+% +4log(4T)-2log(A)-2log(m_b*g) - 4log(w) \leq log(c) - 4log(k)
+bthrust = log(c) - 4*log(k);
 
-% +4log(4T*g* 1e-3)-2log(A)-2log(m_b*g* 1e-3) - log(w) \leq log(c) - log(k) %% all masses in Kg
+% +4log(4T*g* 1e-3)-2log(A)-2log(m_b*g*1e-3) - 4log(w) \leq log(c) - 4log(k) %% all masses in Kg
 % row vectors:
-a_motor = +4 * log( 4 * modules.motors(fIds.thrust,:) * g * 1e-3); 
-a_frame =   -2 * log( ( modules.frames(fIds.width,:) ).^2 );
-a_camera =  -log( modules.cameras(fIds.framerate,:) );  
+a_motor = +4 * log( 4 * modules.motors(fIds.thrust,:) * 1e-3 * g ); 
+a_frame =   -2 * log( ( modules.frames(fIds.size,:) ).^2 );
+a_camera =  -4*log( modules.cameras(fIds.framerate,:) );  
 a_computer = zeros(1,modules.nr_computerVIOs);
-a_battery = -2*log( modules.batteries(fIds.weight,:) * g * 1e-3);
+a_battery = -2*log( modules.batteries(fIds.weight,:) * 1e-3 * g );
 Athrust = [a_motor   a_frame  a_camera  a_computer  a_battery];
 
 Aineq = [Aineq; Athrust];
