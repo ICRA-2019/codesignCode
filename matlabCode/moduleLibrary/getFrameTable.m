@@ -14,4 +14,9 @@ frames_tranpose = ...
   0.270            585         0             0           48.47          0.160      0.240 % Quanum Outlaw 270 Racing Drone Frame Kit
 ]; 
 
+
+cost_col = 5;
+poundToDollarsRate = 1.28;
+frames_tranpose(:,cost_col) = frames_tranpose(:,cost_col) * poundToDollarsRate; % convert to dollars
+
 frames = frames_tranpose';

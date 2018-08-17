@@ -23,6 +23,7 @@ batteries_tranpose = ...
  ]; 
 
 cost_col = 5;
-batteries_tranpose(:,cost_col) = batteries_tranpose(:,cost_col) * 1.28; % convert to dollars
+poundToDollarsRate = 1.28;
+batteries_tranpose(:,cost_col) = batteries_tranpose(:,cost_col) * poundToDollarsRate; % convert to dollars
 
 batteries = batteries_tranpose';

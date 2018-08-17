@@ -200,10 +200,28 @@ classdef testDesignDrone < matlab.unittest.TestCase
             testCase.verifyEqual(expb,bineq)
         end
 
+        %% test_addCostConstraint
+        function test_addCostConstraint(testCase)
+            addpath('../moduleLibrary/');
+            [modules] = loadModules();
+            maxBudget = 2500; % dollars
+            [Aineq, bineq] = addCostConstraint([], [], modules, maxBudget);
+            
+            x = [1; zeros(modules.nr_motors-1,1);
+                1; zeros(modules.nr_frames-1,1);
+                1; zeros(modules.nr_cameras-1,1);
+                1; zeros(modules.nr_computerVIOs-1,1);
+                1; zeros(modules.nr_batteries-1,1)]; 
+            
+            % sum costs < maxBudget 
+            actSol = Aineq*x;
+            poundToDollarsRate = 1.28;
+            expSol = 4*12.82 + 22.87 * poundToDollarsRate + 30 + 59 + 12.93 * poundToDollarsRate; % [note: 4 motors] 
+            
+            testCase.verifyEqual(expSol,actSol,'AbsTol',1e-7)
+            testCase.verifyEqual(maxBudget,bineq,'AbsTol',1e-7)
+        end 
 
-        % %% system constraint: maximum cost
-        % [Aineq, bineq] = addCostConstraint(Aineq, bineq, modules, specs.maxBudget);
-        %
         % %% system constraint: minimum flight time
         % [Aineq, bineq] = addEnduranceConstraint(Aineq, bineq, modules, specs.minFlightTime);
         %

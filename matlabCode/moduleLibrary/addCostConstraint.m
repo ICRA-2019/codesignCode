@@ -6,7 +6,7 @@ function [Aineq, bineq] = addCostConstraint(Aineq, bineq, modules, maxBudget)
 
 % sum costs < maxBudget 
 Asize_mat = zeros(nrFeat,nrModules);
-Asize_mat(fIds.cost,mIds.motor) = +1;
+Asize_mat(fIds.cost,mIds.motor) = +4; % 4 motors
 Asize_mat(fIds.cost,mIds.frame) = +1;
 Asize_mat(fIds.cost,mIds.camera) = +1;
 Asize_mat(fIds.cost,mIds.computer) = +1;
