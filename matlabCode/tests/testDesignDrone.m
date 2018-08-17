@@ -159,10 +159,48 @@ classdef testDesignDrone < matlab.unittest.TestCase
             testCase.verifyEqual(expSol,actSol)
             testCase.verifyEqual(0,bineq)
         end 
+        
+        %% test_addKeyframerateConstraint
+        function test_addKeyframerateConstraint(testCase)
+            addpath('../moduleLibrary/');
+            [modules] = loadModules();
+            maxPxDisplacementKeyframes = 100;
+            [Aineq, bineq] = addKeyframerateConstraint([], [], modules, maxPxDisplacementKeyframes);
+            
+            x = [1; zeros(modules.nr_motors-1,1);
+                1; zeros(modules.nr_frames-1,1);
+                1; zeros(modules.nr_cameras-1,1);
+                1; zeros(modules.nr_computerVIOs-1,1);
+                1; zeros(modules.nr_batteries-1,1)];
+            
+            % sum powers components - power battery < 0
+            actSol = Aineq*x;
+            
+            g = 9.81; %[m/s^2]
+            minDistance = 3; % min distance to obstacles
+            f = 320; % focal length (px/m) % assume fixed for all cameras
+            k = f / (maxPxDisplacementKeyframes * minDistance);
+            rho = 1.2; % Air density [kg/m3],
+            cd =  1.3; % the drag coefficient
+            c = (0.5 * rho * cd)^2;
+            
+            % +4log(4T*g* 1e-3)-2log(A)-2log(m_b*g* 1e-3) - 4log(w) \leq log(c) - 4log(k) %% all masses in Kg
+            T = 110; %[g]
+            A = 0.29^2; %[m^2]
+            m_b = 120; %[g]
+            wvio = 2; % fps
+            expSol = +4*log(4*T*g*1e-3)-2*log(A)-2*log(m_b*g*1e-3)-4*log(wvio); % = 3.5203
+            expb = log(c) - 4*log(k);
+            
+            % +4log(4T*g* 1e-3)-2log(A)-2log(m_b*g*1e-3) - 4log(w) \leq log(c) - 4log(k)
+            %=> 4log(w) > +4*log(4*T*g*1e-3)-2*log(A)-2*log(m_b*g*1e-3) -log(c) + 4log(k)
+            maxv = exp( (+4*log(4*T*g*1e-3)-2*log(A)-2*log(m_b*g*1e-3)-log(c)) / 4); % 15.5329m/s 
+            minw = exp( (+4*log(4*T*g*1e-3)-2*log(A)-2*log(m_b*g*1e-3)-log(c)+4*log(k) ) / 4 ); % 16.5684 fps
+            testCase.verifyEqual(expSol,actSol,'AbsTol',1e-7)
+            testCase.verifyEqual(expb,bineq)
+        end
 
-        % %% Implicit constraint: minimum keyframe-rate
-        % [Aineq, bineq] = addKeyframerateConstraint(Aineq, bineq, modules, specs.maxPxDisplacementKeyframes);
-        %
+
         % %% system constraint: maximum cost
         % [Aineq, bineq] = addCostConstraint(Aineq, bineq, modules, specs.maxBudget);
         %
