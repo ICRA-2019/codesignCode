@@ -1,5 +1,8 @@
-function [Aineq, bineq] = addFramerateConstraint(Aineq, bineq, modules, maxPxDisplacementFrames, meanGroundDistance)
+function [Aineq, bineq] = addFramerateConstraint(Aineq, bineq, modules, maxPxDisplacementFrames, meanGroundDistance, fracMaxSpeed)
 %% (Aineq x <= bineq)
+if nargin < 6
+    fracMaxSpeed = 1; % consider full speed
+end
  
 %% vectorization requires deciding an ordering for the modules and the features
 [mIds, fIds, nrModules, nrFeat, table] = getIds(modules);
@@ -24,7 +27,14 @@ c = (0.5 * rho * cd)^2;
 % 4log(w) \geq 4log(k)+4log(4T)-log(c)-2log(A)-2log(m_b*g)
 % 4log(k)+4log(4T)-log(c)-2log(A)-2log(m_b*g) - 4log(w) \leq 0
 % +4log(4T)-2log(A)-2log(m_b*g) - 4log(w) \leq log(c) - 4log(k)
-bthrust = log(c) - 4*log(k);
+%
+% WITH MARGIN:
+% w > percMaxSpeed * k * v    [0< percMaxSpeed< 1]
+% w^4 > percMaxSpeed^4 * k^4 * T^4 / (c * A^2 * (mg)^2)
+% 4log(w) \geq 4log(percMaxSpeed) + 4log(k)+4log(4T)-log(c)-2log(A)-2log(m_b*g)
+% 4log(percMaxSpeed) + 4log(k)+4log(4T)-log(c)-2log(A)-2log(m_b*g) - 4log(w) \leq 0
+% +4log(4T)-2log(A)-2log(m_b*g) - 4log(w) \leq log(c) - 4log(k) - 4log(percMaxSpeed)
+bthrust = log(c) - 4*log(k) - 4*log(fracMaxSpeed);
 
 % +4log(4T*g* 1e-3)-2log(A)-2log(m_b*g*1e-3) - 4log(w) \leq log(c) - 4log(k) %% all masses in Kg
 % row vectors:
