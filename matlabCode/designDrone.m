@@ -14,11 +14,11 @@ bineq = [];  beq = [];
 [Aineq, bineq] = addPowerConstraint(Aineq, bineq, modules);
 
 %% Implicit constraint: minimum frame-rate
-[Aineq, bineq] = addFramerateConstraint(Aineq, bineq, modules, specs.maxPxDisplacementFrames, specs.meanGroundDistance, specs.fracMaxSpeed);
+[Aineq, bineq] = addFramerateConstraint_v2(Aineq, bineq, modules, specs.maxPxDisplacementFrames, specs.meanGroundDistance, specs.fracMaxSpeed);
 [Aineq, bineq] = addFramerateVIOConstraint(Aineq, bineq, modules);
 
 %% Implicit constraint: minimum keyframe-rate
-[Aineq, bineq] = addKeyframerateConstraint(Aineq, bineq, modules, specs.maxPxDisplacementKeyframes, specs.meanGroundDistance, specs.fracMaxSpeed);
+[Aineq, bineq] = addKeyframerateConstraint_v2(Aineq, bineq, modules, specs.maxPxDisplacementKeyframes, specs.meanGroundDistance, specs.fracMaxSpeed);
 
 %% system constraint: maximum cost
 [Aineq, bineq] = addCostConstraint(Aineq, bineq, modules, specs.maxBudget);
