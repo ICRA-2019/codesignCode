@@ -45,7 +45,7 @@ specs.minFlightTime = 60 * 10; % [s] = X min
 specs.maxPxDisplacementFrames = 30; % [px]
 specs.maxPxDisplacementKeyframes = 200; % [px]
 specs.meanGroundDistance = 5;
-specs.fracMaxSpeed = 0.5;
+specs.fracMaxSpeed = 0.8;
 
 %% design!
 x = designDrone(modules, specs);

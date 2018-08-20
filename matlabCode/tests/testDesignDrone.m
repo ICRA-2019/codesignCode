@@ -164,6 +164,58 @@ classdef testDesignDrone < matlab.unittest.TestCase
             minw = exp( (+4*log(4*T*g*1e-3)-2*log(A)-2*log(m_b*g*1e-3)-log(c)+4*log(k) ) / 4 ); %% more realistic = 55fps
         end 
         
+        %% test_addFramerateConstraint_v2
+        function test_addFramerateConstraint_v2(testCase)
+            addpath('../moduleLibrary/');
+            [modules] = loadModules();
+            maxPxDisplacementFrames = 20;
+            meanGroundDistance = 3;
+            [Aineq, bineq] = addFramerateConstraint_v2([], [], modules, maxPxDisplacementFrames, meanGroundDistance);
+            
+            x = [1; zeros(modules.nr_motors-1,1);
+                1; zeros(modules.nr_frames-1,1);
+                1; zeros(modules.nr_cameras-1,1);
+                1; zeros(modules.nr_computerVIOs-1,1);
+                1; zeros(modules.nr_batteries-1,1)];
+            
+            % sum powers components - power battery < 0
+            actSol = Aineq*x;
+            
+            g = 9.81; %[m/s^2]
+            minDistance = 3; % min distance to obstacles
+            f = 320; % focal length (px/m) % assume fixed for all cameras
+            k = f / (maxPxDisplacementFrames * minDistance);
+            rho = 1.2; % Air density [kg/m3],
+            cd =  1.3; % the drag coefficient
+            c = (0.5 * rho * cd)^2;
+            
+            T = 110; %[g]
+            A = 0.29^2; %[m^2]
+            m_m = 55; m_f = 750; m_c = 50; m_v = 38+50; m_b = 120; %[g]  
+            w = 30; % fps
+            expSol = +4*log(4*T*g*1e-3)-2*log(A)...
+                -2*(log(4*m_m*g*1e-3)/5 + log(m_f*g*1e-3)/5 + log(m_c*g*1e-3)/5 + log(m_v*g*1e-3)/5 + log(m_b*g*1e-3)/5) ...
+                -4*log(w); % = 3.5203
+            expb = log(c) - 4*log(k) + 2*log(5);
+            
+            testCase.verifyEqual(expSol,actSol,'AbsTol',1e-7)
+            testCase.verifyEqual(expb,bineq)
+            
+            % 4log(w) \geq 4log(k)+4log(4T)-log(c)-2log(A)-( SUM_i 2log(mi*g)/nrModules + 2log(nrModules) )
+            maxv = exp( (+4*log(4*T*g*1e-3)-2*log(A)...
+                -2*(log(4*m_m*g*1e-3)/5 + log(m_f*g*1e-3)/5 + log(m_c*g*1e-3)/5 + log(m_v*g*1e-3)/5 + log(m_b*g*1e-3)/5 + log(5)) ...
+                -log(c)) / 4); % 6.1284m/s
+            minw = exp( (+4*log(4*T*g*1e-3)-2*log(A)...
+                -2*(log(4*m_m*g*1e-3)/5 + log(m_f*g*1e-3)/5 + log(m_c*g*1e-3)/5 + log(m_v*g*1e-3)/5 + log(m_b*g*1e-3)/5 + log(5)) ...
+                -log(c)+4*log(k) ) / 4 ); % 32.6846 fps!!!
+            
+            % TEST ESTIMATE SPEED FUNCTION
+            effectiveMaxVel = estimateMaxForwardSpeed(modules,x); % = 5.218855216659
+            upperBoundUsedInDesign = maxv; %  = 6.1284
+            gap = 0.9095; % good upper bound
+            testCase.verifyEqual(upperBoundUsedInDesign - gap,effectiveMaxVel,'AbsTol',1e-4)
+        end 
+        
         %% test_addFramerateVIOConstraint
         function test_addFramerateVIOConstraint(testCase)
             addpath('../moduleLibrary/');
@@ -221,6 +273,50 @@ classdef testDesignDrone < matlab.unittest.TestCase
             %=> 4log(w) > +4*log(4*T*g*1e-3)-2*log(A)-2*log(m_b*g*1e-3) -log(c) + 4log(k)
             maxv = exp( (+4*log(4*T*g*1e-3)-2*log(A)-2*log(m_b*g*1e-3)-log(c)) / 4); % 15.5329m/s 
             minw = exp( (+4*log(4*T*g*1e-3)-2*log(A)-2*log(m_b*g*1e-3)-log(c)+4*log(k) ) / 4 ); % 16.5684 fps
+            testCase.verifyEqual(expSol,actSol,'AbsTol',1e-7)
+            testCase.verifyEqual(expb,bineq)
+        end
+        
+        %% test_addKeyframerateConstraint_v2
+        function test_addKeyframerateConstraint_v2(testCase)
+            addpath('../moduleLibrary/');
+            [modules] = loadModules();
+            maxPxDisplacementKeyframes = 100;
+            meanGroundDistance = 3;
+            [Aineq, bineq] = addKeyframerateConstraint_v2([], [], modules, maxPxDisplacementKeyframes, meanGroundDistance);
+            
+            x = [1; zeros(modules.nr_motors-1,1);
+                1; zeros(modules.nr_frames-1,1);
+                1; zeros(modules.nr_cameras-1,1);
+                1; zeros(modules.nr_computerVIOs-1,1);
+                1; zeros(modules.nr_batteries-1,1)];
+            
+            % sum powers components - power battery < 0
+            actSol = Aineq*x;
+            
+            g = 9.81; %[m/s^2]
+            minDistance = 3; % min distance to obstacles
+            f = 320; % focal length (px/m) % assume fixed for all cameras
+            k = f / (maxPxDisplacementKeyframes * minDistance);
+            rho = 1.2; % Air density [kg/m3],
+            cd =  1.3; % the drag coefficient
+            c = (0.5 * rho * cd)^2;
+            
+            T = 110; %[g]
+            A = 0.29^2; %[m^2]
+            m_m = 55; m_f = 750; m_c = 50; m_v = 38+50; m_b = 120; %[g]  
+            wvio = 2; % fps
+            expSol = +4*log(4*T*g*1e-3)-2*log(A)...
+                -2*(log(4*m_m*g*1e-3)/5 + log(m_f*g*1e-3)/5 + log(m_c*g*1e-3)/5 + log(m_v*g*1e-3)/5 + log(m_b*g*1e-3)/5) ......
+                -4*log(wvio); % = 3.5203
+            expb = log(c) - 4*log(k) + 2*log(5);
+            
+            maxv = exp( (+4*log(4*T*g*1e-3)-2*log(A)...
+                -2*(log(4*m_m*g*1e-3)/5 + log(m_f*g*1e-3)/5 + log(m_c*g*1e-3)/5 + log(m_v*g*1e-3)/5 + log(m_b*g*1e-3)/5 + log(5)) ...
+                -log(c)) / 4); % 6.1284m/s 
+            minw = exp( (+4*log(4*T*g*1e-3)-2*log(A)...
+                -2*(log(4*m_m*g*1e-3)/5 + log(m_f*g*1e-3)/5 + log(m_c*g*1e-3)/5 + log(m_v*g*1e-3)/5 + log(m_b*g*1e-3)/5 + log(5)) ...
+                -log(c)+4*log(k) ) / 4 ); % 6.5369 fps
             testCase.verifyEqual(expSol,actSol,'AbsTol',1e-7)
             testCase.verifyEqual(expb,bineq)
         end
