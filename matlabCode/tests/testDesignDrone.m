@@ -104,7 +104,8 @@ classdef testDesignDrone < matlab.unittest.TestCase
             addpath('../moduleLibrary/');
             [modules] = loadModules();
             maxPxDisplacementFrames = 20;
-            [Aineq, bineq] = addFramerateConstraint([], [], modules, maxPxDisplacementFrames);
+            meanGroundDistance = 3;
+            [Aineq, bineq] = addFramerateConstraint([], [], modules, maxPxDisplacementFrames, meanGroundDistance);
             
             x = [1; zeros(modules.nr_motors-1,1);
                 1; zeros(modules.nr_frames-1,1);
@@ -188,7 +189,8 @@ classdef testDesignDrone < matlab.unittest.TestCase
             addpath('../moduleLibrary/');
             [modules] = loadModules();
             maxPxDisplacementKeyframes = 100;
-            [Aineq, bineq] = addKeyframerateConstraint([], [], modules, maxPxDisplacementKeyframes);
+            meanGroundDistance = 3;
+            [Aineq, bineq] = addKeyframerateConstraint([], [], modules, maxPxDisplacementKeyframes, meanGroundDistance);
             
             x = [1; zeros(modules.nr_motors-1,1);
                 1; zeros(modules.nr_frames-1,1);

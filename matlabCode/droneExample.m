@@ -43,7 +43,8 @@ specs.minFlightTime = 60 * 10; % [s] = X min
 % batteryCapacity = 10/60 * AverageAmpDraw / 0.8 = 10/60 * (4*5) / 0.8
 
 specs.maxPxDisplacementFrames = 30; % [px]
-specs.maxPxDisplacementKeyframes = 100; % [px]
+specs.maxPxDisplacementKeyframes = 200; % [px]
+specs.meanGroundDistance = 5;
 
 %% design!
 x = designDrone(modules, specs);

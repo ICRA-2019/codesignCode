@@ -1,4 +1,4 @@
-function [Aineq, bineq] = addFramerateConstraint(Aineq, bineq, modules, maxPxDisplacementFrames)
+function [Aineq, bineq] = addFramerateConstraint(Aineq, bineq, modules, maxPxDisplacementFrames, meanGroundDistance)
 %% (Aineq x <= bineq)
  
 %% vectorization requires deciding an ordering for the modules and the features
@@ -11,7 +11,7 @@ fIds.thrust = 6;
 %% define constants:
 % parameters from: https://klsin.bpmsg.com/how-fast-can-a-quadcopter-fly/
 g = 9.81; %[m/s^2]
-minDistance = 3; % min distance to obstacles
+minDistance = meanGroundDistance; % min distance to obstacles
 f = 320; % focal length (px/m) % assume fixed for all cameras
 k = f / (maxPxDisplacementFrames * minDistance);
 rho = 1.2; % Air density [kg/m3], 
