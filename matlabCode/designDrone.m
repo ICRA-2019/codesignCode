@@ -1,4 +1,4 @@
-function x = designDrone(modules, specs)
+function [x,maxVel,maxFlightTime_minutes,cost] = designDrone(modules, specs)
 
 %% constraints:
 Aineq = [];  Aeq = [];
@@ -52,6 +52,11 @@ if isempty(x)==0
     fprintf('* max velocity [m/s]: %g\n',maxVel);
     [~,maxFlightTime_minutes] = estimateFlightTime(modules,x);
     fprintf('* max flight time [minutes]: %g\n',maxFlightTime_minutes);
+    [cost] = estimateCost(modules,x);
+    fprintf('* cost [dollars]: %g\n',cost);
 else
     disp('design problem not feasible')
+    maxVel = NaN;
+    maxFlightTime_minutes = NaN;
+    cost = NaN;
 end

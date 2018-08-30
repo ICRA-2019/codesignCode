@@ -1,10 +1,23 @@
+function [x,maxVel,maxFlightTime_minutes,cost] = droneExample(specs)
 % Codesign of an autonomous drone racing platform
 % Author: Luca Carlone
 % Date: 08/08/2018
-clear all
+% clear all
 close all
 clc
 
+if nargin < 1
+    %% system constraints
+    specs.maxBudget = 10000; % [$]
+    specs.minThrustRatio = 2; % []
+    specs.minFlightTime = 60 * 10; % [s] = X min
+    % batteryCapacity = 10/60 * AverageAmpDraw / 0.8 = 10/60 * (4*5) / 0.8
+    specs.maxPxDisplacementFrames = 30; % [px]
+    specs.maxPxDisplacementKeyframes = 10^6; % [px] - relaxed!
+    specs.meanGroundDistance = 5;
+    specs.fracMaxSpeed = 0.8;
+end
+    
 %% start by running unit tests
 % addpath('./tests')
 % clc; run(testDesignDrone);
@@ -36,17 +49,6 @@ modules.nr_cameras = size(modules.cameras,2);
 modules.nr_computerVIOs = size(modules.computerVIOs,2);
 modules.nr_batteries = size(modules.batteries,2);
 
-%% system constraints
-specs.maxBudget = 10000; % [$]
-specs.minThrustRatio = 2; % []
-specs.minFlightTime = 60 * 10; % [s] = X min
-% batteryCapacity = 10/60 * AverageAmpDraw / 0.8 = 10/60 * (4*5) / 0.8
-
-specs.maxPxDisplacementFrames = 30; % [px]
-specs.maxPxDisplacementKeyframes = 200; % [px]
-specs.meanGroundDistance = 5;
-specs.fracMaxSpeed = 0.8;
-
 %% design!
-x = designDrone(modules, specs);
+[x,maxVel,maxFlightTime_minutes,cost] = designDrone(modules, specs);
 
