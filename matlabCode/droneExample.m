@@ -1,4 +1,4 @@
-function [x,maxVel,maxFlightTime_minutes,cost] = droneExample(specs)
+function [x,maxVel,maxFlightTime_minutes,cost] = droneExample(specs,testCombinations)
 % Codesign of an autonomous drone racing platform
 % Author: Luca Carlone
 % Date: 08/08/2018
@@ -50,5 +50,5 @@ modules.nr_computerVIOs = size(modules.computerVIOs,2);
 modules.nr_batteries = size(modules.batteries,2);
 
 %% design!
-[x,maxVel,maxFlightTime_minutes,cost] = designDrone(modules, specs);
+[x,maxVel,maxFlightTime_minutes,cost] = designDrone(modules, specs, testCombinations);
 

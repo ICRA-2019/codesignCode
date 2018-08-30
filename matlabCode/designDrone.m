@@ -1,4 +1,8 @@
-function [x,maxVel,maxFlightTime_minutes,cost] = designDrone(modules, specs)
+function [x,maxVel,maxFlightTime_minutes,cost] = designDrone(modules, specs, testCombinations)
+
+if nargin < 3
+    testCombinations = 0;
+end
 
 %% constraints:
 Aineq = [];  Aeq = [];
@@ -59,4 +63,8 @@ else
     maxVel = NaN;
     maxFlightTime_minutes = NaN;
     cost = NaN;
+end
+
+if testCombinations
+    
 end

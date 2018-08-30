@@ -1,6 +1,6 @@
 function frames = getFrameTable()
 
-% number from here: https://hobbyking.com/en_us/aircraft/drones/frame-kits.html
+% numbers from here: https://hobbyking.com/en_us/aircraft/drones/frame-kits.html
 
 % voltage and current are kept to preserve ordering wrt other modules
 % size is only longest = length
