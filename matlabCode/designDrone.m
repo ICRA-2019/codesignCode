@@ -40,7 +40,9 @@ f = maxSpeedObjective(modules);
 % set options and optimize
 options = cplexoptimset;
 options.Display = 'on';
+tic
 [x, fval, exitflag, output] = cplexbilp (f, Aineq, bineq, Aeq, beq, [], options);
+timeCplex = toc
 
 if isempty(x)==0
     fprintf('optimal objective: %g\n',fval);
@@ -66,5 +68,7 @@ else
 end
 
 if testCombinations
-    
+    tc = tic;
+    testAllCombinations(modules, Aineq, bineq, Aeq, beq);
+    timeCombinations = toc(tc)
 end

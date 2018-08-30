@@ -28,9 +28,9 @@ motors_tranpose = ...
  0.025           55          11             9.6       12.82        670 % 17
  %
  0.028           40.7        23             17.91     42.99*p2d    1058.99 % 18 - 65% trottle -https://www.unmannedtechshop.co.uk/brushless-motors/?sort=pricedesc
- 0.028           40.7        11             6          50           1000 % made up
- 0.028           40.7        11             6         100           2000 % made up
- 0.028           40.7        11             6         200           3000 % made up
+%  0.028           40.7        11             6          50           1000 % made up
+%  0.028           40.7        11             6         100           2000 % made up
+%  0.028           40.7        11             6         200           3000 % made up
  ]; 
 
 %% https://alofthobbies.com/power/motors/emax-cf-series.html
