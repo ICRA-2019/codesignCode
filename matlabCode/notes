@@ -1,3 +1,0 @@
-% export LD_LIBRARY_PATH=/opt/ibm/ILOG/CPLEX_Studio_Preview126/opl/bin/x86-64_linux/
-% echo $LD_LIBRARY_PATH
-% /opt/ibm/ILOG/CPLEX_Studio_Preview126

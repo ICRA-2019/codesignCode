@@ -1,0 +1,18 @@
+download file with long name
+
+move file to \opt
+sudo cp ~/cplex_studio126_pr_lnx_x86_64.bin /opt/
+
+make file executable: 
+chmod 755 cplex_studio126_pr_lnx_x86_64.bin 
+ls -l
+
+execute
+sudo ./cplex_studio126_pr_lnx_x86_64.bin
+
+exportLD_LBRARY_PATH=$LD_LIBRARY_PATH:/poly/tools/ILOG-IBM/CPLEX_Studio_Academic124/opl/bin/x86-64_sles10_4.1
+
+
+/opt/ibm/ILOG/CPLEX_Studio126
+
+
