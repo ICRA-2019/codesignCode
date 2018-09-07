@@ -48,29 +48,29 @@ cweight = 20 * csize;
 %%%%%%%%%%%%%%%%%%%%
 % Number of robots
 % The maximum is calculated using the radius of the smallest chassis
-robots = ceil(pi * (oradius + cweight(1)) / cweight(1));
+robots = floor(pi * (oradius + cradius(1)) / cradius(1));
 
 %%%%%%%%%%%%%%%%%%%%
 % Sensors
 % Coverage
-scoverage = linspace(1.0 / robots, 100.0, snum);
+scoverage = linspace(1.0 / robots, 50.0, snum);
 % Size is expressed wrt the chassis area
-ssize = linspace(csize(1) * 0.2, csize(cnum) * 0.2, snum);
+ssize = linspace(csize(1) * 0.1, csize(cnum) * 0.1, snum);
 % Weight is proportional to the area (constant density)
-sweight = 10 * ssize;
+sweight = 1.0 * ssize;
 % Power consumption goes as the square of the coverage
 spower = linspace(0.1, 5, snum);
 
 %%%%%%%%%%%%%%%%%%%%
 % Motors
-% We assume forces exceed by 50% the minimum and maximum chassis weight
-mforce = linspace(cweight(1) * 1.5, cweight(cnum) * 1.5, mnum);
-% Weight is 10% of the exerted force
-mweight = 0.1 * mforce;
+% We assume forces are proportional the minimum and maximum chassis weight
+mforce = linspace(cweight(1) * 5, cweight(cnum) * 5, mnum);
+% Weight is 5% of the exerted force
+mweight = 0.05 * mforce;
 % Size is proportional to weight
 msize = mweight / 30;
 % Power is proportional to force
-mpower = mforce / 5;
+mpower = mforce / 20;
 
 %%%%%%%%%%%%%%%%%%%%
 % Batteries
