@@ -59,3 +59,4 @@ if size(x,1) > 0
 else
     fprintf(fid, "No solutions found.\n");
 end
+fprintf(fid, "\n");

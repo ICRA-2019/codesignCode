@@ -36,47 +36,32 @@
 
 function [robots, cweight, cradius, csize, scoverage, spower, sweight, ssize, mforce, mpower, mweight, msize, bpower, bweight, bsize] = generateproblem(oradius, oweight, cnum, snum, mnum, bnum)
 
-%%%%%%%%%%%%%%%%%%%%
-% Chassis
-% The smallest has a radius of 10cm
-% The largest has a radius of 30cm
-cradius = linspace(0.1, 0.30, cnum);
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Budgets
+% Size [m] and [m^2]
+cradius = linspace(0.10, 0.30, cnum);
 csize   = pi * (cradius .* cradius);
-% The weight is proportional to the area (constant density)
-cweight = 20 * csize;
+% Robots
+robots  = floor(pi*(cradius(1)+oradius)/cradius(1));
+% Lift force [N]
+mforce = 9.81 * linspace(0.1, 10, mnum);
+% Power [W]
+bpower = linspace(0.5, 5, bnum);
+% Sensing
+scoverage = linspace(10.0, 33.0, snum);
 
-%%%%%%%%%%%%%%%%%%%%
-% Number of robots
-% The maximum is calculated using the radius of the smallest chassis
-robots = floor(pi * (oradius + cradius(1)) / cradius(1));
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Costs
+% Size
+ssize = 0.20 * linspace(csize(1), csize(cnum), snum);
+msize = 0.10 * linspace(csize(1), csize(cnum), mnum);
+bsize = 0.05 * linspace(csize(1), csize(cnum), bnum);
+% Weight
 
-%%%%%%%%%%%%%%%%%%%%
-% Sensors
-% Coverage
-scoverage = linspace(1.0 / robots, 50.0, snum);
-% Size is expressed wrt the chassis area
-ssize = linspace(csize(1) * 0.1, csize(cnum) * 0.1, snum);
-% Weight is proportional to the area (constant density)
-sweight = 1.0 * ssize;
-% Power consumption goes as the square of the coverage
-spower = linspace(0.1, 5, snum);
-
-%%%%%%%%%%%%%%%%%%%%
-% Motors
-% We assume forces are proportional the minimum and maximum chassis weight
-mforce = linspace(cweight(1) * 5, cweight(cnum) * 5, mnum);
-% Weight is 5% of the exerted force
-mweight = 0.05 * mforce;
-% Size is proportional to weight
-msize = mweight / 30;
-% Power is proportional to force
-mpower = mforce / 20;
-
-%%%%%%%%%%%%%%%%%%%%
-% Batteries
-% Minimum and maximum power referred to the smallest and largest configurations
-bpower = linspace(mpower(1)+spower(1), mpower(mnum)+spower(snum), bnum);
-% Size is proportional to power
-bsize = 0.05 * bpower;
-% Weight is proportional to size
-bweight = 0.1 * bsize;
+cweight = 0.10 * linspace(mforce(1), mforce(mnum), cnum);
+sweight = 0.10 * linspace(mforce(1), mforce(mnum), snum);
+mweight = 0.25 * mforce;
+bweight = 0.05 * linspace(mforce(1), mforce(mnum), bnum);
+% Power
+spower = 0.25 * linspace(bpower(1), bpower(cnum), snum);
+mpower = 0.25 * linspace(bpower(1), bpower(cnum), mnum);

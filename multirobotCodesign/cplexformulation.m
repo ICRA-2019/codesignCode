@@ -104,7 +104,7 @@ end
 % 6. The total force exerted is enough to lift the robots and the object
 c6 = repmat([0 cweight sweight (mweight-mforce) bweight], 1, robots);
 Aineq = [Aineq; c6];
-bineq = [bineq; -oweight];
+bineq = [bineq; -9.81 * oweight];
 
 
 
@@ -139,9 +139,9 @@ end
 %%%%%%%%%%
 % 9. The total size of the robots is lower than the circumference
 % of the object
-c9 = repmat([0 2.0*cradius zeros(1, snum+mnum+bnum)], 1, robots);
-Aineq = [Aineq; c9];
-bineq = [bineq; oradius];
+% $$$ c9 = repmat([0 2.0*cradius zeros(1, snum+mnum+bnum)], 1, robots);
+% $$$ Aineq = [Aineq; c9];
+% $$$ bineq = [bineq; oradius];
 
 
 
